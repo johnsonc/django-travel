@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Healthy Travel</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admin/css/widgets.css" rel="stylesheet">
+
+    <script src="/static/admin/js/vendor/jquery/jquery.js"></script>
+    <script src="/static/admin/js/jquery.init.js"></script>
+
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="/static/admin/js/core.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+
+    {{ form.media }}
+
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- form -->
+                <p></p>
+                <ol class="breadcrumb">
+                    <li class="active">Go Healthy Reservations</li>
+                    <li class="active">FORM</li>
+                </ol>
+
+                <div class="col-md-6 col-md-offset-3">
+                    <form>{{ form.as_p }}</form>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

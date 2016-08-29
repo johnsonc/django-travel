@@ -16,24 +16,80 @@
 
     {{ form.media }}
 
+    <style rel="stylesheet">
+        .booking-form > p > label{
+            min-width: 120px;
+        }
+        .suite-table { margin-top: 48px; }
+        .suite-table > tbody > tr { height: 120px; }
+        .table-striped > tbody > tr:nth-of-type(2n+1) {
+            background-color: #faffff;
+        }
+        .suite-table > tbody > tr > td { line-height: 3.0; }
+        .suite-table > tbody > tr > td > .suite-name { color: #00B198 }
+        .suite-table > tbody > tr > td > .btn-default {
+            background-color: #EBF7EE;
+            border: none;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .suite-table > tbody > tr > td > .btn-default:hover {
+            background-color: #69ECB5;
+        }
+    </style>
 </head>
 <body>
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <!-- form -->
+                <!-- nav -->
                 <p></p>
                 <ol class="breadcrumb">
                     <li class="active">Go Healthy Reservations</li>
                     <li class="active">FORM</li>
                 </ol>
 
-                <div class="col-md-6 col-md-offset-3">
-                    <form>{{ form.as_p }}</form>
+                <!-- form -->
+                <div class="col-md-12">
+                    <form class="booking-form">{{ form.as_p }}</form>
                 </div>
+            </div>
 
+            <div class="row">
 
+                <div class="col-md-6 col-md-offset-3">
+                {% if available_suites %}
+                    <table class="table table-striped suite-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>AVAILABLE</th>
+                                <th>PRICE</th>
+                            </tr>
+                        </thead>
+
+                        {% for suite in available_suites %}
+                        <tr>
+
+                            <td>
+                                <button type="button" class="btn btn-default btn-lg">Available</button>
+                            </td>
+
+                            <td>
+                                <h4 class="suite-name">{{ suite.name }}</h4>
+                            </td>
+
+                            <td>${{ suite.price_per_night }} per night</td>
+
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+                {% else %}
+                    <p>No suites are available.</p>
+                {% endif %}
+                </div>
 
             </div>
         </div>

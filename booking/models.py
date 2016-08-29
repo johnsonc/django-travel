@@ -5,7 +5,7 @@ from django.db import models
 
 class SuiteEntity(models.Model):
     name = models.CharField(max_length=128)
-    price_per_night = models.DecimalField(max_digits=8, decimal_places=2)
+    price_per_night = models.IntegerField(default=10)
 
     def __str__(self):
         return self.name
@@ -25,7 +25,7 @@ class BusyDateRangeOfSuite(models.Model):
 
 
 class Booking(models.Model):
-    created_date = models.DateField(auto_now=True)
+    created_date = models.DateTimeField(auto_now=True)
 
     check_in_date = models.DateField()
     check_out_date = models.DateField()

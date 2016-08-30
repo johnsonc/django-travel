@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^admin/jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index, name='index'),
+    url(r'^check$', views.check, name='check')
 ]

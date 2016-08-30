@@ -20,10 +20,10 @@
         .booking-form > p > label{
             min-width: 120px;
         }
-        .suite-table { margin-top: 48px; }
+        .suite-table { margin-top: -18px; }
         .suite-table > tbody > tr { height: 120px; }
         .table-striped > tbody > tr:nth-of-type(2n+1) {
-            background-color: #faffff;
+            background-color: #f3fcf3;
         }
         .suite-table > tbody > tr > td { line-height: 3.0; }
         .suite-table > tbody > tr > td > .suite-name { color: #00B198 }
@@ -42,56 +42,62 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-                <!-- nav -->
+        <!-- nav -->
                 <p></p>
                 <ol class="breadcrumb">
                     <li class="active">Go Healthy Reservations</li>
                     <li class="active">FORM</li>
                 </ol>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
 
                 <!-- form -->
-                <div class="col-md-12">
-                    <form class="booking-form">{{ form.as_p }}</form>
-                </div>
+                <form class="booking-form">{{ form.as_p }}</form>
+
             </div>
 
-            <div class="row">
 
-                <div class="col-md-6 col-md-offset-3">
-                {% if available_suites %}
-                    <table class="table table-striped suite-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>AVAILABLE</th>
-                                <th>PRICE</th>
-                            </tr>
-                        </thead>
 
-                        {% for suite in available_suites %}
+            <div class="col-md-8">
+            {% if available_suites %}
+                <table class="table table-striped suite-table">
+                    <thead>
                         <tr>
-
-                            <td>
-                                <button type="button" class="btn btn-default btn-lg">Available</button>
-                            </td>
-
-                            <td>
-                                <h4 class="suite-name">{{ suite.name }}</h4>
-                            </td>
-
-                            <td>${{ suite.price_per_night }} per night</td>
-
+                            <th></th>
+                            <th>AVAILABLE</th>
+                            <th>PRICE</th>
                         </tr>
-                        {% endfor %}
+                    </thead>
 
-                    </table>
-                {% else %}
-                    <p>No suites are available.</p>
-                {% endif %}
-                </div>
+                    {% for suite in available_suites %}
+                    <tr>
 
+                        <td>
+                            <button type="button" class="btn btn-default btn-lg">Available</button>
+                        </td>
+
+                        <td>
+                            <h4 class="suite-name">{{ suite.name }}</h4>
+                            {% if suite.rent_periods.all %}
+                                {% for period in suite.rent_periods.all %}
+                                    <h6>{{ period }}</h6>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+
+                        <td>${{ suite.price_per_night }} per night</td>
+
+                    </tr>
+                    {% endfor %}
+
+                </table>
+            {% else %}
+                <p>No suites are available.</p>
+            {% endif %}
             </div>
+
+
         </div>
     </div>
 

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .forms import BookingForm
 
-from .models import SuiteEntity
+from .models import SuiteEntity, RentPeriod
 
 
 # Index view.

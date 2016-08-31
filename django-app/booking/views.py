@@ -5,9 +5,12 @@ from django.shortcuts import render
 from django.utils.html import escape
 from django.views.decorators.http import require_POST
 
+from django.http import HttpResponseBadRequest
+# from django.template import Context, loader
+
 from .forms import BookingForm
 from .models import SuiteEntity, RentPeriod
-from time_utility import get_overlap_for_range
+from time_utility import get_overlap_for_range, get_datetime_delta
 
 logger = logging.getLogger(__name__)
 
@@ -45,17 +48,51 @@ def index(request):
 def check(request):
     logger.debug("require_POST /check")
 
-    pk = int(request.POST['pk'])
-    check_in_date = escape(request.POST['check_in_date'])
-    check_out_date = escape(request.POST['check_out_date'])
+    try:
+        pk = int(request.POST['pk'])
+        check_in_date = escape(request.POST['check_in_date'])
+        check_out_date = escape(request.POST['check_out_date'])
 
-    if pk and check_in_date and check_out_date:
-        logger.debug("check_in_date is {0}".format(check_in_date))
-        logger.debug("check_out_date is {0}".format(check_out_date))
+        if pk and check_in_date and check_out_date:
+            logger.debug("check_in_date is {0}".format(check_in_date))
+            logger.debug("check_out_date is {0}".format(check_out_date))
+
+            check_in_date = datetime.strptime(check_in_date, "%Y-%m-%d")
+            check_out_date = datetime.strptime(check_out_date, "%Y-%m-%d")
+
+            logger.debug("get_datetime_delta is {0}".format(get_datetime_delta(check_in_date, check_out_date)))
+
+            if get_datetime_delta(check_in_date, check_out_date):
+                logger.debug("OK")
+            else:
+                context = {
+                    'request_path': request.path,
+                    'exception': "Dates range is invalid!!"
+                }
+
+                logger.debug(context['exception'])
+
+                # template = loader.get_template('400.html')
+                # body = template.render(context, request)
+                return HttpResponseBadRequest(context['exception'])
+
+    except Exception as e:
+        print(e.message)
+
+        pk = 1
+        check_in_date = None
+        check_out_date = None
 
     suite = SuiteEntity.objects.get(pk=pk)
 
     today = datetime.today().strftime("%H:%M %d/%m/%y")
-    context = {'today': today, 'suite': suite, 'pk': pk, 'check_in_date': check_in_date, 'check_out_date': check_out_date}
+
+    context = {
+        'today': today,
+        'suite': suite,
+        'pk': pk,
+        'check_in_date': check_in_date.strftime("%Y-%m-%d"),
+        'check_out_date': check_out_date.strftime("%Y-%m-%d")
+    }
 
     return render(request, 'check.html', context)

@@ -4,6 +4,12 @@ from datetime import date, timedelta
 from collections import namedtuple
 
 
+def get_datetime_delta(start, end):
+    delta = end - start
+
+    return delta if delta > timedelta() else None
+
+
 def get_overlap_for_range(start, end, days):
     Range = namedtuple('Range', ['start', 'end'])
 

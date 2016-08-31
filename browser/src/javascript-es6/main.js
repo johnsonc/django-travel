@@ -6,5 +6,6 @@
  */
 
 import controller from './controller';
+import "./checking"
 
 controller();

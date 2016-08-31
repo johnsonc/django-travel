@@ -6,5 +6,5 @@
 import checkClickHandler from './handlers.js';
 
 export default function () {
-    django.jQuery("button.btn.btn-default.btn-lg").on("click", checkClickHandler);
+    if (typeof django !== 'undefined') {django.jQuery("button.btn.btn-default.btn-lg").on("click", checkClickHandler)}
 }

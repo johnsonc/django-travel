@@ -10,7 +10,7 @@ from django.http import HttpResponseBadRequest
 
 from .forms import BookingForm
 from .models import SuiteEntity, RentPeriod
-from time_utility import get_overlap_for_range, get_datetime_delta
+from time_utility import get_overlap_for_range, get_succesful_dates_delta
 
 logger = logging.getLogger(__name__)
 
@@ -53,46 +53,69 @@ def check(request):
         check_in_date = escape(request.POST['check_in_date'])
         check_out_date = escape(request.POST['check_out_date'])
 
-        if pk and check_in_date and check_out_date:
-            logger.debug("check_in_date is {0}".format(check_in_date))
-            logger.debug("check_out_date is {0}".format(check_out_date))
+        logger.debug("check_in_date is {0}".format(check_in_date))
+        logger.debug("check_out_date is {0}".format(check_out_date))
 
-            check_in_date = datetime.strptime(check_in_date, "%Y-%m-%d")
-            check_out_date = datetime.strptime(check_out_date, "%Y-%m-%d")
-
-            logger.debug("get_datetime_delta is {0}".format(get_datetime_delta(check_in_date, check_out_date)))
-
-            if get_datetime_delta(check_in_date, check_out_date):
-                logger.debug("OK")
-            else:
-                context = {
-                    'request_path': request.path,
-                    'exception': "Dates range is invalid!!"
-                }
-
-                logger.debug(context['exception'])
-
-                # template = loader.get_template('400.html')
-                # body = template.render(context, request)
-                return HttpResponseBadRequest(context['exception'])
+        check_in_date = datetime.strptime(check_in_date, "%Y-%m-%d")
+        check_out_date = datetime.strptime(check_out_date, "%Y-%m-%d")
 
     except Exception as e:
         print(e.message)
 
         pk = 1
-        check_in_date = None
-        check_out_date = None
+        check_in_date = datetime.today()
+        check_out_date = datetime.today()
 
-    suite = SuiteEntity.objects.get(pk=pk)
+    if pk and check_in_date and check_out_date:
 
-    today = datetime.today().strftime("%H:%M %d/%m/%y")
+        check_in_date_formated = check_in_date.strftime("%Y-%m-%d")
+        check_out_date_formated = check_out_date.strftime("%Y-%m-%d")
 
-    context = {
-        'today': today,
-        'suite': suite,
-        'pk': pk,
-        'check_in_date': check_in_date.strftime("%Y-%m-%d"),
-        'check_out_date': check_out_date.strftime("%Y-%m-%d")
-    }
+        interval_delta = get_succesful_dates_delta(check_in_date, check_out_date)
 
-    return render(request, 'check.html', context)
+        logger.debug("get_datetime_delta is {0}".format(interval_delta))
+
+        if interval_delta:
+            logger.debug("OK")
+
+            request.session['check_in_date'] = check_in_date_formated
+            request.session['check_out_date'] = check_out_date_formated
+            request.session['suit_pk'] = pk
+
+            suite = SuiteEntity.objects.get(pk=pk)
+
+            today = datetime.today().strftime("%H:%M %d/%m/%y")
+
+            interval_date_template = "{0} - {1}"
+            interval_date_format = "%a %b %d %Y"
+
+            context = {
+                'today': today,
+                'suite': suite,
+                'pk': pk,
+                'check_in_date_format': check_in_date_formated,
+                'check_out_date_format': check_out_date_formated,
+                'interval_date_format': interval_date_template.format(
+                    check_in_date.strftime(interval_date_format),
+                    check_out_date.strftime(interval_date_format),
+                ),
+                'interval_days': interval_delta.days,
+                'price_per_one': interval_delta.days * suite.price_per_night
+            }
+
+            return render(request, 'check.html', context)
+
+        else:
+            context = {
+                'request_path': request.path,
+                'exception': "Dates range is invalid!!"
+            }
+
+            logger.debug(context['exception'])
+            request.session.flush()
+
+            # template = loader.get_template('400.html')
+            # body = template.render(context, request)
+            return HttpResponseBadRequest(context['exception'])
+    else:
+        return HttpResponseBadRequest("Error POST data")

@@ -140,3 +140,5 @@ LOGGING = {
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "booking/static/dist")
 ]
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"

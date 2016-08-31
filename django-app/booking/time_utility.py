@@ -1,13 +1,13 @@
 #! python
 # -*- coding: utf-8 -*-
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from collections import namedtuple
 
 
-def get_datetime_delta(start, end):
+def get_succesful_dates_delta(start, end, delta_days=3):
     delta = end - start
 
-    return delta if delta > timedelta() else None
+    return delta if delta > timedelta(days=delta_days) and start > datetime.today() else 0
 
 
 def get_overlap_for_range(start, end, days):

@@ -9,12 +9,12 @@
         <ul class="list-group">
 
             <li class="list-group-item">
-            <span class="badge">{{ check_in_date }}</span>
+            <span class="badge">{{ check_in_date_format }}</span>
                 Check in date:
             </li>
 
             <li class="list-group-item">
-            <span class="badge">{{ check_out_date }}</span>
+            <span class="badge">{{ check_out_date_format }}</span>
                 Check out date:
             </li>
 
@@ -44,7 +44,12 @@
             <div class="panel-footer">
                 <h5>Adults</h5>
                 <input class="adults" type="number" min="1" max="4" value="1" autocomplete="off">
+                <span>x ${{ suite.price_per_night }}</span>
             </div>
+
+            <h4 class="text-center date-interval">
+                {{ interval_date_format }} <span class="price_per_one">${{ price_per_one }}</span>
+            </h4>
         </div>
 
     {% endif %}

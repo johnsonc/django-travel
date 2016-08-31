@@ -1,0 +1,26 @@
+{
+  "name": "travel-django",
+  "version": "1.0.0",
+  "description": "Django based booking engine for travel",
+  "main": "dist/js/main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-preset-es2015-rollup": "^1.2.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean": "^0.3.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-less": "^3.0.5",
+    "gulp-rename": "^1.2.2",
+    "gulp-rollup": "^2.3.0",
+    "gulp-sourcemaps": "^2.0.0-alpha",
+    "gulp-util": "^3.0.7",
+    "rollup-plugin-babel": "^2.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrey Menangen menangen@gmail.com",
+  "license": "Apache License"
+}

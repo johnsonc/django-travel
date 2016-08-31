@@ -12,9 +12,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY manage.py /usr/src/app
 COPY db.sqlite3 /usr/src/app
 
-COPY booking/*.py /usr/src/app/booking/
 COPY booking/migrations/*.py /usr/src/app/booking/migrations/
+
+COPY booking/*.py /usr/src/app/booking/
+
 COPY booking/templates/*.html /usr/src/app/booking/templates/
+COPY booking/static/dist/ /usr/src/app/booking/static/dist/
 
 COPY travel_booking/*.py /usr/src/app/travel_booking/
 

@@ -1,0 +1,44 @@
+@import "colors";
+
+.booking-form {
+
+    p {
+        label {
+            min-width: 120px;
+        }
+    }
+
+}
+
+.suite-table {
+    margin-top: -18px;
+
+    tbody {
+        tr {
+            height: 120px;
+
+            &:nth-of-type(2n+1) {
+                background-color: @table-stripped-bg;
+            }
+
+            td {
+                line-height: 3.0;
+
+                .suite-name {
+                    color: @suite-name
+                }
+
+                .btn-default {
+                    background-color: @available-large-button-bg;
+                    border: none;
+                    text-transform: uppercase;
+                    font-weight: bold;
+
+                    &:hover {
+                        background-color: @available-large-button-hover-bg;
+                    }
+                }
+            }
+        }
+    }
+}

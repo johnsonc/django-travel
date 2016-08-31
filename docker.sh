@@ -2,7 +2,7 @@
 
 function build {
         echo  "Building image.."
-        docker build -t travel-django-app .
+        docker build -t travel-django-app django-app
 }
 
 function start {

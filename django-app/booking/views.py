@@ -1,7 +1,9 @@
 import logging
 from datetime import datetime
+
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.utils.html import escape
+from django.views.decorators.http import require_POST
 
 from .forms import BookingForm
 from .models import SuiteEntity, RentPeriod
@@ -39,8 +41,21 @@ def index(request):
     return render(request, 'booking.html', context)
 
 
+@require_POST
 def check(request):
-    pk = request.POST['pk']
-    logger.debug("PK is {0}".format(pk))
+    logger.debug("require_POST /check")
 
-    return HttpResponse("Checking {0} index.".format(pk))
+    pk = int(request.POST['pk'])
+    check_in_date = escape(request.POST['check_in_date'])
+    check_out_date = escape(request.POST['check_out_date'])
+
+    if pk and check_in_date and check_out_date:
+        logger.debug("check_in_date is {0}".format(check_in_date))
+        logger.debug("check_out_date is {0}".format(check_out_date))
+
+    suite = SuiteEntity.objects.get(pk=pk)
+
+    today = datetime.today().strftime("%H:%M %d/%m/%y")
+    context = {'today': today, 'suite': suite, 'pk': pk, 'check_in_date': check_in_date, 'check_out_date': check_out_date}
+
+    return render(request, 'check.html', context)

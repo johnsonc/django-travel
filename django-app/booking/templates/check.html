@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Checking Healthy Travel{% endblock %}
+{% block location %}CHECKING{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <ul class="list-group">
+
+            <li class="list-group-item">
+            <span class="badge">{{ check_in_date }}</span>
+                Check in date:
+            </li>
+
+            <li class="list-group-item">
+            <span class="badge">{{ check_out_date }}</span>
+                Check out date:
+            </li>
+
+        </ul>
+    </div>
+
+    <div class="col-md-5">
+    {% if suite %}
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{ suite }}
+                <button type="button" class="btn btn-success btn-xs pull-right available-marker">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    Available
+                </button>
+            </h3>
+          </div>
+
+            <div class="panel-body price-item">
+
+                <p><b>Price per night</b></p>
+                <p><span class="badge">${{ suite.price_per_night }}</span></p>
+
+            </div>
+
+            <div class="panel-footer">
+                <h5>Adults</h5>
+                <input class="adults" type="number" min="1" max="4" value="1" autocomplete="off">
+            </div>
+        </div>
+
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

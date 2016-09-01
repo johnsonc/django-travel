@@ -6,7 +6,7 @@ from django.utils.html import escape
 from django.views.decorators.http import require_POST
 
 from django.http import HttpResponseBadRequest
-# from django.template import Context, loader
+from django.template import Context, loader
 
 from .forms import BookingForm
 from .models import SuiteEntity, RentPeriod
@@ -107,15 +107,24 @@ def check(request):
 
         else:
             context = {
-                'request_path': request.path,
-                'exception': "Dates range is invalid!!"
+                'exception': "Dates range is invalid!"
             }
 
             logger.debug(context['exception'])
             request.session.flush()
 
-            # template = loader.get_template('400.html')
-            # body = template.render(context, request)
-            return HttpResponseBadRequest(context['exception'])
+            template = loader.get_template('error_400.html')
+            body = template.render(context, request)
+            return HttpResponseBadRequest(body)
     else:
-        return HttpResponseBadRequest("Error POST data")
+
+        context = {
+            'exception': "Error POST data!"
+        }
+
+        logger.debug(context['exception'])
+        request.session.flush()
+
+        template = loader.get_template('error_400.html')
+        body = template.render(context, request)
+        return HttpResponseBadRequest(body)

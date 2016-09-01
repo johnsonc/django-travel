@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta
 from collections import namedtuple
 
 
-def get_succesful_dates_delta(start, end, delta_days=3):
+def get_succesful_dates_delta(start, end, delta_days=2):
     delta = end - start
 
     return delta if delta > timedelta(days=delta_days) and start > datetime.today() else 0

@@ -5,11 +5,8 @@
  * Time: 9:05
  */
 
-import booking_controller from './controller';
-import checking_controller from "./checking";
 import bookingController from './controllers/index';
-
-
+import checkingController from "./controllers/checking";
 
 const $applicationMeta = document.querySelectorAll("meta[name=application-name]");
 
@@ -20,17 +17,13 @@ const $applicationMeta = document.querySelectorAll("meta[name=application-name]"
 
      switch (moduleName) {
 
-         case "booking":
-             booking_controller();
-             break;
-         case "checking":
-             checking_controller();
-             break;
-         case "index":
+        case "index":
              bookingController();
              break;
+         case "checking":
+             checkingController();
+             break;
      }
-
 
  }
  else {

@@ -35,6 +35,7 @@ gulp.task('javascript', function() {
     var files = [
      '/javascript-es6/*.js',
      '/javascript-es6/controllers/*.js',
+     '/javascript-es6/handlers/*.js',
     ];
 
     gulp.src(files.map(config.srcLocationModifier))

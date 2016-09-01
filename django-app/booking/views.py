@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django.utils.html import escape
 from django.views.decorators.http import require_POST
 
-from django.http import HttpResponseBadRequest
-from django.template import Context, loader
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.template import loader
 
 from .forms import BookingForm
 from .models import SuiteEntity, RentPeriod
@@ -70,6 +70,7 @@ def booking(request):
     return render(request, 'booking.html', context)
 
 
+# Form1 sending view: 1 step
 @require_POST
 def check(request):
     logger.debug("require_POST /check")
@@ -98,19 +99,19 @@ def check(request):
 
             return HttpResponseBadRequest(body)
 
-        check_in_date_formated = check_in_date.strftime("%Y-%m-%d")
-        check_out_date_formated = check_out_date.strftime("%Y-%m-%d")
+        check_in_date_formated = check_in_date.strftime("%m-%d-%Y")
+        check_out_date_formated = check_out_date.strftime("%m-%d-%Y")
 
-        interval_delta = get_succesful_dates_delta(check_in_date, check_out_date)
+        #  (start, end, delta_days=2)
+        interval_delta = get_succesful_dates_delta(start=check_in_date, end=check_out_date)
 
-        logger.debug("get_datetime_delta is {0}".format(interval_delta))
+        logger.debug("get_datetime_delta is {0} days".format(interval_delta.days))
 
         if interval_delta:
-            logger.debug("OK")
 
-            request.session['check_in_date'] = check_in_date_formated
-            request.session['check_out_date'] = check_out_date_formated
-            request.session['suit_pk'] = pk
+            request.session['check_in_date'] = check_in_date.strftime("%Y-%m-%d")
+            request.session['check_out_date'] = check_out_date.strftime("%Y-%m-%d")
+            request.session['suite_pk'] = pk
 
             suite = SuiteEntity.objects.get(pk=pk)
 
@@ -150,6 +151,47 @@ def check(request):
 
         context = {
             'exception': "Error POST data!"
+        }
+
+        logger.debug(context['exception'])
+        request.session.flush()
+
+        template = loader.get_template('error_400.html')
+        body = template.render(context, request)
+        return HttpResponseBadRequest(body)
+
+
+# Form2 sending view: 2 step
+def invoice(request):
+    try:
+        adults = request.POST['adults']
+
+        logger.debug("adults is {0} and type {1}".format(adults, type(adults)))
+        adults = int(adults)
+
+    except Exception as e:
+
+        logger.warning("Exception = {0}".format(e.message))
+        request.session.flush()
+
+    try:
+        suite_pk = request.session['suite_pk']
+        logger.debug("suite id is {0}".format(suite_pk))
+
+        suite_pk = int(suite_pk)
+
+    except Exception as e:
+        logger.warning("Exception = {0}".format(e.message))
+        request.session.flush()
+
+    try:
+
+        if adults and suite_pk:
+            return HttpResponse("<p>Adults count = {0}.</p><p>Suite id = {1}</p>".format(adults, suite_pk))
+
+    except:
+        context = {
+            'exception': "POST data is invalid!"
         }
 
         logger.debug(context['exception'])

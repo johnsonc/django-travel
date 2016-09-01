@@ -20,9 +20,12 @@ from django.views.i18n import JavaScriptCatalog
 from booking import views
 
 urlpatterns = [
+    # TODO: remove it
     url(r'^admin/jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url(r'^admin/', admin.site.urls),
+
     url(r'^$', views.index, name='index'),
-    url(r'^booking$', views.booking, name='booking'),
-    url(r'^check$', views.check, name='check')
+    url(r'^booking$', views.booking, name='booking'),  # TODO: remove it
+    url(r'^check$', views.check, name='check'),
+    url(r'^invoice$', views.invoice, name='invoice')
 ]

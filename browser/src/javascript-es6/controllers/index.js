@@ -4,42 +4,31 @@
  * Date: 31.08.16
  * Time: 9:05
  */
-let start = moment().add(1, 'days');
-let end = moment().add(4, 'days');
-
-let min = moment().add(1, 'days');
-
-function changeDateHandler(start, end) {
-    let display_format = 'MMMM D, YYYY';
-    let django_format = 'YYYY-MM-DD';
-
-    $('#reportrange span').html(
-        `${start.format(display_format)} - ${end.format(display_format)}`
-    );
-
-    let form = $('#checking_form');
-    let checkin_date_field = $("input[name='check_in_date']", form);
-    let checkout_date_field = $("input[name='check_out_date']", form);
-
-    checkin_date_field.val(start.format(django_format));
-    checkout_date_field.val(end.format(django_format))
-}
+import { checkClickHandler, changeDateHandler } from "../handlers/index";
 
 export default function () {
+
+    let start_day = moment().add(1, 'days');
+    let end_day = moment().add(4, 'days');
+
+    let min_day = moment().add(1, 'days');
+
     $(() => {
 
+        $("button.btn.btn-default.btn-lg").on("click", checkClickHandler);
+
         $('#reportrange').daterangepicker({
-            startDate: start,
-            endDate: end,
-            minDate: min,
+            startDate: start_day,
+            endDate: end_day,
+            minDate: min_day,
             ranges: {
                'Next 4 days': [moment().add(1, 'days'), moment().add(4, 'days')],
                'Next week': [moment().add(1, 'days'), moment().add(7, 'days')],
-               'Week after': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+               'Month later': [moment().add(1, 'month'), moment().add(1, 'month').add(4, 'days')]
             }
         }, changeDateHandler);
 
-        changeDateHandler(start, end);
+        changeDateHandler(start_day, end_day);
 
     });
 }

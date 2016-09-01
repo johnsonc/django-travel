@@ -8,87 +8,94 @@
 {% block location %}CHECKING{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
-        <ul class="list-group">
+    <!-- form -->
+    <form action="/invoice" method="post" id="checking_form">
+    {% csrf_token %}
+        <input name="adults" type="hidden" value="1">
+        <input name="addons" type="hidden" value="None">
+    </form>
 
-            <li class="list-group-item">
-            <span class="badge">{{ check_in_date_format }}</span>
-                Check in date:
-            </li>
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="list-group date-check">
 
-            <li class="list-group-item">
-            <span class="badge">{{ check_out_date_format }}</span>
-                Check out date:
-            </li>
+                <li class="list-group-item">
+                <span class="badge">{{ check_in_date_format }}</span>
+                    Check in date:
+                </li>
 
-        </ul>
-    </div>
+                <li class="list-group-item">
+                <span class="badge">{{ check_out_date_format }}</span>
+                    Check out date:
+                </li>
 
-    <div class="col-md-5">
-    {% if suite %}
-
-        <div class="panel panel-default suite-panel">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{ suite }}
-                <span class="btn-xs available-marker">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    Available
-                </span>
-            </h3>
-          </div>
-
-            <div class="panel-body price-item">
-
-                <p><b>Price per night</b></p>
-                <p><span class="badge">${{ suite.price_per_night }}</span></p>
-
-            </div>
-
-            <div class="panel-footer">
-                <h5>Adults</h5>
-                <input class="adults" type="number" min="1" max="4" value="1" autocomplete="off">
-                <span>x ${{ suite.price_per_night }}</span>
-            </div>
-
-            <h4 class="text-center date-interval">
-                {{ interval_date_format }} <span class="price_per_one">${{ price_per_one }}</span>
-            </h4>
+            </ul>
         </div>
 
-    {% endif %}
-    </div>
+        <div class="col-md-5">
+        {% if suite %}
 
-    <div class="col-md-4">
-    {% if suite %}
+            <div class="panel panel-default suite-panel">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{ suite }}
+                    <span class="btn-xs available-marker">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        Available
+                    </span>
+                </h3>
+              </div>
 
-        <div class="panel panel-default addons-panel">
-          <div class="panel-heading">
-            <h3 class="panel-title">Addons</h3>
-          </div>
+                <div class="panel-body price-item">
 
-            <div class="panel-body">
+                    <p><b>Price per night</b></p>
+                    <p><span class="badge">${{ suite.price_per_night }}</span></p>
 
-                <div class="btn-group-vertical addons-buttons-group" role="group" aria-label="Vertical button group">
-                    <button type="button" class="btn btn-default">Tours</button>
-                    <button type="button" class="btn btn-default">cultural discovery</button>
-                    <button type="button" class="btn btn-default">paddle boarding</button>
-                    <button type="button" class="btn btn-default">shuttle</button>
                 </div>
 
+                <div class="panel-footer">
+                    <h5>Adults</h5>
+                    <input class="adults" type="number" min="1" max="4" value="1" autocomplete="off">
+                    <span>x ${{ suite.price_per_night }}</span>
+                </div>
+
+                <h4 class="text-center date-interval">
+                    {{ interval_date_format }} <span class="price_per_one">${{ price_per_one }}</span>
+                </h4>
             </div>
+
+        {% endif %}
         </div>
 
-    {% endif %}
+        <div class="col-md-4">
+        {% if suite %}
+
+            <div class="panel panel-default addons-panel">
+              <div class="panel-heading">
+                <h3 class="panel-title">Addons</h3>
+              </div>
+
+                <div class="panel-body">
+
+                    <div class="btn-group-vertical addons-buttons-group" role="group" aria-label="Vertical button group">
+                        <button type="button" class="btn btn-default">Tours</button>
+                        <button type="button" class="btn btn-default">cultural discovery</button>
+                        <button type="button" class="btn btn-default">paddle boarding</button>
+                        <button type="button" class="btn btn-default">shuttle</button>
+                    </div>
+
+                </div>
+            </div>
+
+        {% endif %}
+        </div>
+
     </div>
 
-</div>
-
-<div class="row">
-    <div class="col-md-5 col-md-offset-3">
-        <p>
-          <button type="button" class="btn btn-primary btn-lg pull-right">Continue</button>
-        </p>
+    <div class="row">
+        <div class="col-md-5 col-md-offset-3 continue-block">
+            <p>
+              <button type="button" class="btn btn-primary btn-lg pull-right">Continue</button>
+            </p>
     </div>
-</div>
+    </div>
 {% endblock %}

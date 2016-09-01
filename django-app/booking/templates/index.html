@@ -15,11 +15,11 @@
 
 {% block content %}
     <!-- form -->
-    <form action="/check" method="post" class="booking-form" id="checking_form">
+    <form action="/check" method="post" id="checking_form">
     {% csrf_token %}
-        <input name="check_in_date" size="10" type="hidden">
-        <input name="check_out_date" size="10" type="hidden">
-{#        <input type="hidden" id="checking_form_pk" name="pk" value="000">#}
+        <input name="check_in_date" type="hidden">
+        <input name="check_out_date" type="hidden">
+        <input type="hidden" id="checking_form_pk" name="pk" value="000">
     </form>
 
     <div class="row">

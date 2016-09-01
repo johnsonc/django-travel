@@ -8,22 +8,70 @@
 
 {% block css %}
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 {% endblock %}
 
 
 {% block content %}
+    <!-- form -->
+    <form action="/check" method="post" class="booking-form" id="checking_form">
+    {% csrf_token %}
+        <input name="check_in_date" size="10" type="hidden">
+        <input name="check_out_date" size="10" type="hidden">
+{#        <input type="hidden" id="checking_form_pk" name="pk" value="000">#}
+    </form>
 
     <div class="row">
 
-        <div class="col-md-3">
+        <div class="col-md-4">
 
-            <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 260px">
-                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+            <div id="reportrange">
+                <i class="fa fa-calendar"></i>&nbsp;
                 <span></span> <b class="caret"></b>
             </div>
 
         </div>
+
+        <div class="col-md-8">
+            {% if available_suites %}
+                <table class="table table-striped suite-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>AVAILABLE</th>
+                            <th>PRICE</th>
+                        </tr>
+                    </thead>
+
+                    {% for suite in available_suites %}
+                    <tr>
+
+                        <td>
+                            <button name="{{ suite.pk }}" type="button" class="btn btn-default btn-lg">Available</button>
+                            <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzE0MHgxNDAKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTZkZDRjZGFkYiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1NmRkNGNkYWRiIj48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQzLjA0MTY2NjAzMDg4Mzc5IiB5PSI3NC44Ij4xNDB4MTQwPC90ZXh0PjwvZz48L2c+PC9zdmc+" alt="photo" class="img-thumbnail">
+                        </td>
+
+                        <td>
+                            <h4 class="suite-name">{{ suite.name }}</h4>
+                            {% if suite.rent_periods.all %}
+                                {% for period in suite.rent_periods.all %}
+                                    <h5>Rented: (day/m/y)</h5>
+                                    <h6>{{ period }}</h6>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+
+                        <td>${{ suite.price_per_night }} per night</td>
+
+                    </tr>
+                    {% endfor %}
+
+                </table>
+            {% else %}
+                <p>No suites are available.</p>
+            {% endif %}
+            </div>
 
     </div>
 

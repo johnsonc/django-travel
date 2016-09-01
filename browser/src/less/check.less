@@ -1,41 +1,65 @@
 .panel-default {
-    border-color: @checking-panel-border;
+    &.suite-panel {
+        border-color: @checking-panel-border;
 
-    .panel-heading {
-        background-color: @checking-panel-heading;
+        .panel-heading {
+            background-color: @checking-panel-heading;
 
-        .available-marker {
-            border-radius: 4px;
-            margin-top: -2px;
+            .available-marker {
+                position: absolute;
+                right: 15px + 15px;
+                margin-top: -2px;
 
-            font-weight: bold;
+                font-weight: bold;
+                color: #fff;
+                cursor: default;
+
+                background-color: #5cb85c;
+                border: 1px solid #4cae4c;
+                border-radius: 4px;
+            }
         }
+
+        .price-item {
+            background-color: @checking-page-price-bg;
+
+            span.badge {
+                background-color: @checking-page-price-badge;
+                font-size: 14px;
+
+                cursor: default;
+            }
+        }
+
+        .panel-footer {
+            .adults {
+                max-width: 64px;
+            }
+        }
+
+        .date-interval {
+            font-weight: normal;
+
+            .price_per_one {
+                margin-left: 24px;
+
+                font-weight: bold;
+                border-bottom: medium solid green;
+            }
+        }
+
     }
 
-    .price-item {
-        background-color: @checking-page-price-bg;
+    &.addons-panel {
+        .addons-buttons-group {
+            display: inherit;
 
-        span.badge {
-            background-color: @checking-page-price-badge;
-            font-size: 14px;
+            .btn.btn-default {
+                &:hover {
+                    background-color: #e5f2ec;
+                    border-color: #c5e0cf;
+                }
+            }
         }
     }
-
-    .panel-footer {
-        .adults {
-            max-width: 64px;
-        }
-    }
-
-    .date-interval {
-        font-weight: normal;
-
-        .price_per_one {
-            margin-left: 24px;
-
-            font-weight: bold;
-            border-bottom: medium solid green;
-        }
-    }
-
-}
+ }

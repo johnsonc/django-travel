@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def index(request):
 
     rent_periods = RentPeriod.objects.all()
-    busy_date_range_pks = []
+    busy_date_range_pks = set()
 
     for period in rent_periods:
         suite_start_date = period.start_date
@@ -29,7 +29,7 @@ def index(request):
         if overlap:
             logger.debug("{0} days overlap in {1} period".format(overlap, period))
 
-            busy_date_range_pks.append(period.pk)
+            busy_date_range_pks.add(period.pk)
 
     logger.debug("busy_date_range_pks is {0}".format(busy_date_range_pks))
 

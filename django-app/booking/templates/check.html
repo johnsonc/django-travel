@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block meta %}
+    <meta charset="UTF-8">
+    <meta name="application-name" content="checking">
+{% endblock %}
 {% block title %}Checking Healthy Travel{% endblock %}
 {% block location %}CHECKING{% endblock %}
 
@@ -24,13 +28,13 @@
     <div class="col-md-5">
     {% if suite %}
 
-        <div class="panel panel-default">
+        <div class="panel panel-default suite-panel">
           <div class="panel-heading">
             <h3 class="panel-title">{{ suite }}
-                <button type="button" class="btn btn-success btn-xs pull-right available-marker">
+                <span class="btn-xs available-marker">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                     Available
-                </button>
+                </span>
             </h3>
           </div>
 
@@ -53,6 +57,38 @@
         </div>
 
     {% endif %}
+    </div>
+
+    <div class="col-md-4">
+    {% if suite %}
+
+        <div class="panel panel-default addons-panel">
+          <div class="panel-heading">
+            <h3 class="panel-title">Addons</h3>
+          </div>
+
+            <div class="panel-body">
+
+                <div class="btn-group-vertical addons-buttons-group" role="group" aria-label="Vertical button group">
+                    <button type="button" class="btn btn-default">Tours</button>
+                    <button type="button" class="btn btn-default">cultural discovery</button>
+                    <button type="button" class="btn btn-default">paddle boarding</button>
+                    <button type="button" class="btn btn-default">shuttle</button>
+                </div>
+
+            </div>
+        </div>
+
+    {% endif %}
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-5 col-md-offset-3">
+        <p>
+          <button type="button" class="btn btn-primary btn-lg pull-right">Continue</button>
+        </p>
     </div>
 </div>
 {% endblock %}

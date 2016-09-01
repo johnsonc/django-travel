@@ -5,7 +5,7 @@
  * Time: 9:05
  */
 
-if (typeof $ !== 'undefined') {
+export default function () {
     $(function () {
         const adultsField = $(".adults");
         const priceField = $(".price_per_one");

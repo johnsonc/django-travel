@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     {% load static %}
+    {% block meta %}
     <meta charset="UTF-8">
+    {% endblock %}
     <title>{% block title %}Django Healthy Travel{% endblock %}</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
@@ -25,8 +27,9 @@
 
         {% block content %}{% endblock %}
     </div>
-
+{% block scripts %}
 <script src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
 <script src="{% static "js/all.js" %}"></script>
+{% endblock %}
 </body>
 </html>

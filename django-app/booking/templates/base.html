@@ -6,8 +6,9 @@
     <meta charset="UTF-8">
     {% endblock %}
     <title>{% block title %}Django Healthy Travel{% endblock %}</title>
-
+    {% block css %}
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    {% endblock %}
     <link href="{% static "css/main.min.css" %}" rel="stylesheet">
 </head>
 <body>
@@ -20,7 +21,7 @@
                     <ol class="breadcrumb {% block error_class %}{% endblock %}">
                         <li class="active">Go Healthy Reservations</li>
                         <li class="active">{% block location %}FORM{% endblock %}</li>
-                        {% block time %}<li class="active"><b class="text-success ">Today: {{ today }}</b></li>{% endblock %}
+                        {% block time %}<li class="active"><b class="text-success ">{{ today }}</b></li>{% endblock %}
                     </ol>
             </div>
         {% endblock %}
@@ -28,6 +29,7 @@
         {% block content %}{% endblock %}
     </div>
 {% block scripts %}
+{#<script src="{% static "https://yastatic.net/jquery/3.1.0/jquery.min.js" %}"></script>#}
 <script src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
 <script src="{% static "js/all.js" %}"></script>
 {% endblock %}

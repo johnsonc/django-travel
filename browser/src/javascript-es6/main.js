@@ -7,6 +7,7 @@
 
 import booking_controller from './controller';
 import checking_controller from "./checking";
+import bookingController from './controllers/index';
 
 
 
@@ -15,7 +16,7 @@ const $applicationMeta = document.querySelectorAll("meta[name=application-name]"
  if (typeof $applicationMeta[0] !== 'undefined') {
 
      const moduleName = $applicationMeta[0].content;
-     console.log(`Nice module ${ moduleName }`);
+     console.log(`Loaded ${ moduleName } module`);
 
      switch (moduleName) {
 
@@ -24,6 +25,9 @@ const $applicationMeta = document.querySelectorAll("meta[name=application-name]"
              break;
          case "checking":
              checking_controller();
+             break;
+         case "index":
+             bookingController();
              break;
      }
 

@@ -18,6 +18,14 @@ logger = logging.getLogger(__name__)
 # Index view.
 def index(request):
 
+    today = datetime.today().strftime("%H:%M %d/%m/%y")
+
+    context = {'today': today}
+    return render(request, 'index.html', context)
+
+
+def booking(request):
+
     rent_periods = RentPeriod.objects.all()
     busy_date_range_pks = set()
 
@@ -48,25 +56,29 @@ def index(request):
 def check(request):
     logger.debug("require_POST /check")
 
-    try:
-        pk = int(request.POST['pk'])
-        check_in_date = escape(request.POST['check_in_date'])
-        check_out_date = escape(request.POST['check_out_date'])
+    pk = int(request.POST['pk'])
+    check_in_date = escape(request.POST['check_in_date'])
+    check_out_date = escape(request.POST['check_out_date'])
 
-        logger.debug("check_in_date is {0}".format(check_in_date))
-        logger.debug("check_out_date is {0}".format(check_out_date))
-
-        check_in_date = datetime.strptime(check_in_date, "%Y-%m-%d")
-        check_out_date = datetime.strptime(check_out_date, "%Y-%m-%d")
-
-    except Exception as e:
-        print(e.message)
-
-        pk = 1
-        check_in_date = datetime.today()
-        check_out_date = datetime.today()
+    logger.debug("check_in_date is {0}".format(check_in_date))
+    logger.debug("check_out_date is {0}".format(check_out_date))
 
     if pk and check_in_date and check_out_date:
+
+        try:
+            check_in_date = datetime.strptime(check_in_date, "%Y-%m-%d")
+            check_out_date = datetime.strptime(check_out_date, "%Y-%m-%d")
+
+        except Exception as e:
+            logger.warning(e.message)
+
+            context = {
+                'exception': "Dates format is invalid!"
+            }
+            template = loader.get_template('error_400.html')
+            body = template.render(context, request)
+
+            return HttpResponseBadRequest(body)
 
         check_in_date_formated = check_in_date.strftime("%Y-%m-%d")
         check_out_date_formated = check_out_date.strftime("%Y-%m-%d")

@@ -16,17 +16,30 @@ var babel = require("gulp-babel");
 
 var config = {
     bundleName: "TravelApplication",
-    srcLocation: "browser/src",
+    production: !!util.env.production,
+
     distLocation: "django-app/booking/static/dist",
-    production: !!util.env.production
+    distLocationModifier: function (currentValue) {
+        return config.distLocation + currentValue
+    },
+    srcLocation: "browser/src",
+    srcLocationModifier: function (currentValue) {
+        return config.srcLocation + currentValue
+    }
 };
 
 gulp.task("default", ["less", "javascript"]);
 
 gulp.task('javascript', function() {
-  gulp.src(config.srcLocation +'/javascript-es6/*.js')
 
-        .pipe(sourcemaps.init())
+    var files = [
+     '/javascript-es6/*.js',
+     '/javascript-es6/controllers/*.js',
+    ];
+
+    gulp.src(files.map(config.srcLocationModifier))
+
+        //.pipe(sourcemaps.init())
         .pipe(rollup({
             // any option supported by Rollup can be set here.
             entry: config.srcLocation +'/javascript-es6/main.js',
@@ -53,14 +66,12 @@ gulp.task('less', function() {
 });
 
 gulp.task('clean', function() {
-
-    gulp.src(
-        [
-            config.distLocation +"/css/main.min.css",
-            config.distLocation +"/js/all.js",
-            config.distLocation +"/js/all.js.map"
-        ],
-        {read: false}
+    var files = [
+        "/css/main.min.css",
+        "/js/all.js",
+        "/js/all.js.map"
+    ];
+    gulp.src(config.distLocationModifier(files), {read: false}
     )
     .pipe(clean());
 

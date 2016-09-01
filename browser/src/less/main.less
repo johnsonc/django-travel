@@ -2,12 +2,26 @@
 @import "check";
 @import "errors";
 
+A { color: @suite-name }
+
+/* TODO: remove it*/
+input[name="daterange"] {
+    min-width: 200px;
+}
+
+
+.breadcrumb {
+    .text-success { color: @suite-name}
+}
+
 .booking-form {
 
     p {
         label {
             min-width: 120px;
         }
+
+        .date-icon { color: @suite-name }
     }
 
 }

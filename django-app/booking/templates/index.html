@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+    <meta charset="UTF-8">
+    <meta name="application-name" content="index">
+{% endblock %}
+
+{% block css %}
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+            <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 260px">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                <span></span> <b class="caret"></b>
+            </div>
+
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <script src="{% static "js/all.js" %}"></script>
+{% endblock %}

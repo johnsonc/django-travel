@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Checking{% endblock %}
+{% block location %}THANKS{% endblock %}
+
+{% block time %}{% endblock %}
+
+{% block content %}
+    <div class="col-md-6 col-md-offset-3">
+
+        <div class="jumbotron result-jumbotron">
+            <h1>Thank you!</h1>
+            <p>{{ name }}, you have rented</p>
+            <h4>{{ suite }}</h4>
+            <p>For <b>{{ days }}</b> Nights</p>
+            <p class="invoice-message">We will send soon email invoice to {{ email }}</p>
+        </div>
+
+    </div>
+{% endblock %}

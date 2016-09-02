@@ -10,15 +10,7 @@
 {% block container-class %}container invoice-container{% endblock %}
 
 {% block content %}
-    <!-- form -->
-    <form action="/invoice/create" method="post" id="invoiceForm">
-    {% csrf_token %}
-        <input name="username" type="hidden">
-        <input name="email" type="hidden">
-    </form>
-
     <div class="row pricing">
-
 
         <table class="table table-condensed">
             <thead>
@@ -43,8 +35,40 @@
             </tbody>
         </table>
 
-
    </div>
+
+    <div class="row">
+        <p>
+            Before entering personal information and booking your vacation package:
+            We have a reminder of the general terms to keep in mind while booking your vacations. Go Healthy participating hotels and deluxe condos are located at a walking distance from our restaurant and beachfront lounge. Prices include the healthy lifestyles featured as part of your Go Healthy Travel vacations package: signature cuisine at breakfast, lunch and dinner; yoga classes; olfacto therapy, signature massages, and bodywork treatments; and free airport transfers. Meals and yoga classes are offered at the beachfront lounge; however, complimentary room service is available between our lounge and your hotel. Add-ons are not included in the price. Add-ons refer to any activity not mentioned here. The hotel mini bar and the hotel room service are extras not included in your vacation package and must be paid directly to the hotel that is hosting you. We hope to welcome you soon in Playa del Carmen where “happy vacations last forever!”
+        </p>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12 continue-block">
+            <p>
+                 <!-- form -->
+                <form class="form-inline" action="/invoice/create" method="post" id="invoiceForm">
+                {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="exampleInputName2">Name</label>
+                        <input name="username" type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe" required>
+                      </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" required>
+                    </div>
+
+                    <div class="form-group pull-right-sumbit">
+                        <button class="btn btn-primary btn-lg" type="submit">Continue</button>
+                    </div>
+                </form>
+            </p>
+        </div>
+    </div>
 
     <footer class="footer">
         <p>© 2016 Healthy Travel</p>

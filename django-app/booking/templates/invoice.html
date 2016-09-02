@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block meta %}
+    <meta charset="UTF-8">
+    <meta name="application-name" content="invoice">
+{% endblock %}
+{% block title %}Invoice Healthy Travel{% endblock %}
+{% block location %}INVOICE{% endblock %}
+
+{% block container-class %}container invoice-container{% endblock %}
+
+{% block content %}
+    <!-- form -->
+    <form action="/invoice/create" method="post" id="invoiceForm">
+    {% csrf_token %}
+        <input name="username" type="hidden">
+        <input name="email" type="hidden">
+    </form>
+
+    <div class="row pricing">
+
+
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <p class="suite-name">{{ suite.name }}</p>
+                        <p class="rent-interval">{{ interval_date_format }}</p>
+                    </td>
+
+                    <td><b>Adults ({{ adults }}):</b> {{ interval_days }} Nights @ ${{ suite.price_per_night }}.00</td>
+
+                    <td><b>${{ price }}</b></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+   </div>
+
+    <footer class="footer">
+        <p>© 2016 Healthy Travel</p>
+    </footer>
+{% endblock %}

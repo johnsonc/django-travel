@@ -13,6 +13,7 @@ from .models import Suite, RentPeriod, Addon
 from time_utility import get_overlap_for_range, get_succesful_dates_delta
 
 logger = logging.getLogger(__name__)
+TEMPLATE_404 = loader.get_template('error_400.html')
 
 
 # Index view.
@@ -67,7 +68,7 @@ def booking(request):
     today = datetime.today().strftime("%H:%M %d/%m/%y")
     context = {'form': form, 'available_suites': free_suites, 'today': today}
 
-    return render(request, 'booking.html', context)
+    return render(request, 'invoice.html', context)
 
 
 # Form1 sending view: 1 step
@@ -76,8 +77,8 @@ def check(request):
     logger.debug("require_POST /check")
 
     pk = int(request.POST['pk'])
-    check_in_date = escape(request.POST['check_in_date'])
-    check_out_date = escape(request.POST['check_out_date'])
+    check_in_date = request.POST['check_in_date']
+    check_out_date = request.POST['check_out_date']
 
     logger.debug("check_in_date is {0}".format(check_in_date))
     logger.debug("check_out_date is {0}".format(check_out_date))
@@ -94,8 +95,8 @@ def check(request):
             context = {
                 'exception': "Dates format is invalid!"
             }
-            template = loader.get_template('error_400.html')
-            body = template.render(context, request)
+
+            body = TEMPLATE_404.render(context, request)
 
             return HttpResponseBadRequest(body)
 
@@ -103,15 +104,15 @@ def check(request):
         check_out_date_formated = check_out_date.strftime("%m-%d-%Y")
 
         #  (start, end, delta_days=2)
-        interval_delta = get_succesful_dates_delta(start=check_in_date, end=check_out_date)
+        rent_interval = get_succesful_dates_delta(start=check_in_date, end=check_out_date)
 
-        logger.debug("get_datetime_delta is {0} days".format(interval_delta.days))
+        logger.debug("get_datetime_delta is {0} days".format(rent_interval.days))
 
-        if interval_delta:
+        if rent_interval:
 
             request.session['check_in_date'] = check_in_date.strftime("%Y-%m-%d")
             request.session['check_out_date'] = check_out_date.strftime("%Y-%m-%d")
-            request.session['suite_pk'] = pk
+            request.session['suite'] = pk
 
             suite = Suite.objects.get(pk=pk)
 
@@ -132,8 +133,8 @@ def check(request):
                     check_in_date.strftime(interval_date_format),
                     check_out_date.strftime(interval_date_format),
                 ),
-                'interval_days': interval_delta.days,
-                'price_per_one': interval_delta.days * suite.price_per_night,
+                'interval_days': rent_interval.days,
+                'price_per_one': rent_interval.days * suite.price_per_night,
                 'addons': addons
             }
 
@@ -147,8 +148,7 @@ def check(request):
             logger.debug(context['exception'])
             request.session.flush()
 
-            template = loader.get_template('error_400.html')
-            body = template.render(context, request)
+            body = TEMPLATE_404.render(context, request)
             return HttpResponseBadRequest(body)
     else:
 
@@ -159,40 +159,33 @@ def check(request):
         logger.debug(context['exception'])
         request.session.flush()
 
-        template = loader.get_template('error_400.html')
-        body = template.render(context, request)
+        body = TEMPLATE_404.render(context, request)
         return HttpResponseBadRequest(body)
 
 
 # Form2 sending view: 2 step
+@require_POST
 def invoice(request):
     try:
-        adults = request.POST['adults']
-
+        adults = int(request.POST['adults'])
         logger.debug("adults is {0} and type {1}".format(adults, type(adults)))
-        adults = int(adults)
 
-    except Exception as e:
-
-        logger.warning("Exception = {0}".format(e.message))
-        request.session.flush()
-
-    try:
-        suite_pk = request.session['suite_pk']
+        suite_pk = int(request.session['suite'])
         logger.debug("suite id is {0}".format(suite_pk))
 
-        suite_pk = int(suite_pk)
+        check_in_date = request.session['check_in_date']
+        check_out_date = request.session['check_out_date']
+
+        logger.debug("[request.session] check_in_date is {0}".format(check_in_date))
+        logger.debug("[request.session] check_out_date is {0}".format(check_out_date))
+
+        check_in_date = datetime.strptime(check_in_date, "%Y-%m-%d")
+        check_out_date = datetime.strptime(check_out_date, "%Y-%m-%d")
 
     except Exception as e:
         logger.warning("Exception = {0}".format(e.message))
         request.session.flush()
 
-    try:
-
-        if adults and suite_pk:
-            return HttpResponse("<p>Adults count = {0}.</p><p>Suite id = {1}</p>".format(adults, suite_pk))
-
-    except:
         context = {
             'exception': "POST data is invalid!"
         }
@@ -200,6 +193,50 @@ def invoice(request):
         logger.debug(context['exception'])
         request.session.flush()
 
-        template = loader.get_template('error_400.html')
-        body = template.render(context, request)
+        body = TEMPLATE_404.render(context, request)
         return HttpResponseBadRequest(body)
+
+    if adults in xrange(1, 13) and suite_pk:
+
+        suite = Suite.objects.get(pk=suite_pk)
+
+        today = datetime.today().strftime("%H:%M %d/%m/%y")
+
+        check_in_date_formated = check_in_date.strftime("%m-%d-%Y")
+        check_out_date_formated = check_out_date.strftime("%m-%d-%Y")
+
+        interval_date_template = "{0} - {1}"
+        interval_date_format = "%a %b %d %Y"
+
+        rent_interval = get_succesful_dates_delta(start=check_in_date, end=check_out_date)
+
+        logger.debug("get_datetime_delta is {0} days".format(rent_interval.days))
+
+        if rent_interval:
+
+            context = {
+                'today': today,
+                'suite': suite,
+                'check_in_date_format': check_in_date_formated,
+                'check_out_date_format': check_out_date_formated,
+                'interval_date_format': interval_date_template.format(
+                    check_in_date.strftime(interval_date_format),
+                    check_out_date.strftime(interval_date_format),
+                ),
+                'interval_days': rent_interval.days,
+                'adults': adults,
+                'price': rent_interval.days * suite.price_per_night * adults,
+                'addons': None
+            }
+
+            return render(request, 'invoice.html', context)
+
+    context = {
+        'exception': "POST data is invalid!"
+    }
+
+    logger.debug(context['exception'])
+    request.session.flush()
+
+    body = TEMPLATE_404.render(context, request)
+    return HttpResponseBadRequest(body)

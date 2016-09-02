@@ -1,0 +1,36 @@
+.container.invoice-container {
+    max-width: 730px;
+
+    .pricing, .footer {
+        padding-left: 0; padding-right: 0;
+    }
+
+    .pricing {
+
+        .table-condensed {
+            thead { color: @invoice-table-header-text}
+
+            td { padding-top: 15px }
+            tbody > tr > td:first-child { padding-left: 15px; }
+
+            .suite-name {
+                font-size: 15px;
+                font-weight: bold;
+                text-decoration: underline;
+            }
+
+            .rent-interval {
+                color: @invoice-table-date-interval;
+            }
+
+        }
+
+    }
+
+    .footer {
+        padding-top: 19px;
+        color: #777;
+        border-top: 1px solid #e5e5e5;
+    }
+
+}

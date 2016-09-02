@@ -1,10 +1,12 @@
-# from django.test import TestCase
-from datetime import date
-from time_utility import get_overlap_for_range
+from django.test import TestCase
+from .models import AddonsStack
 
-suite_start_date = date(2016, 8, 20)
-suite_end_date = date(2016, 8, 30)
 
-rent_days = 4
+class EntryModelTest(TestCase):
 
-print(get_overlap_for_range(suite_start_date, suite_end_date, days=rent_days))
+    def test_string_representation(self):
+        addons_stack = AddonsStack.objects.all()
+
+        data = [{'pk': stack.pk, '__str__': str(stack)} for stack in addons_stack]
+
+        return True

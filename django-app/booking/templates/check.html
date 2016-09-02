@@ -55,7 +55,7 @@
                 <div class="panel-footer">
                     <h5>Adults</h5>
                     <input class="adults" type="number" min="1" max="4" value="1" autocomplete="off">
-                    <span>x ${{ suite.price_per_night }}</span>
+                    <span>x ${{ price_per_one }}</span>
                 </div>
 
                 <h4 class="text-center date-interval">
@@ -77,10 +77,11 @@
                 <div class="panel-body">
 
                     <div class="btn-group-vertical addons-buttons-group" role="group" aria-label="Vertical button group">
-                        <button type="button" class="btn btn-default">Tours</button>
-                        <button type="button" class="btn btn-default">cultural discovery</button>
-                        <button type="button" class="btn btn-default">paddle boarding</button>
-                        <button type="button" class="btn btn-default">shuttle</button>
+                        {% for addon in addons %}
+                        <button type="button" class="btn btn-default">
+                            {{ addon.name }} <span class="addon-price">${{ addon.price }} per {{ addon.get_unit_display }}</span>
+                        </button>
+                        {% endfor %}
                     </div>
 
                 </div>

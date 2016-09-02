@@ -1,7 +1,12 @@
 from django.contrib import admin
 
-from .models import Booking, SuiteEntity, RentPeriod
+from .models import Booking, Suite, RentPeriod, DateInterval, TimeInterval, Addon, AddonsEntity, AddonsStack
 
 admin.site.register(Booking)
-admin.site.register(SuiteEntity)
+admin.site.register(Suite)
 admin.site.register(RentPeriod)
+admin.site.register(DateInterval)
+admin.site.register(TimeInterval)
+admin.site.register(Addon)
+admin.site.register(AddonsEntity)
+admin.site.register(AddonsStack)

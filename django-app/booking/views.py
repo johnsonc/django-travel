@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import loader
 
 from .forms import BookingForm
-from .models import SuiteEntity, RentPeriod
+from .models import Suite, RentPeriod, Addon
 from time_utility import get_overlap_for_range, get_succesful_dates_delta
 
 logger = logging.getLogger(__name__)
@@ -21,8 +21,8 @@ def index(request):
     busy_date_range_pks = set()
 
     for period in rent_periods:
-        suite_start_date = period.start_date
-        suite_end_date = period.finish_date
+        suite_start_date = period.interval.start_date
+        suite_end_date = period.interval.finish_date
 
         overlap = get_overlap_for_range(suite_start_date, suite_end_date, days=4)
         if overlap:
@@ -32,7 +32,7 @@ def index(request):
 
     logger.debug("busy_date_range_pks is {0}".format(busy_date_range_pks))
 
-    free_suites = SuiteEntity.objects.exclude(
+    free_suites = Suite.objects.exclude(
         rent_periods__pk__in=busy_date_range_pks
     ).order_by('-price_per_night').reverse()
 
@@ -44,7 +44,7 @@ def index(request):
 
 def booking(request):
 
-    rent_periods = RentPeriod.objects.all()
+    rent_periods = DateInterval.objects.all()
     busy_date_range_pks = set()
 
     for period in rent_periods:
@@ -59,7 +59,7 @@ def booking(request):
 
     logger.debug("busy_date_range_pks is {0}".format(busy_date_range_pks))
 
-    free_suites = SuiteEntity.objects.exclude(
+    free_suites = Suite.objects.exclude(
                         rent_periods__pk__in=busy_date_range_pks
                         ).order_by('-price_per_night').reverse()
 
@@ -113,12 +113,14 @@ def check(request):
             request.session['check_out_date'] = check_out_date.strftime("%Y-%m-%d")
             request.session['suite_pk'] = pk
 
-            suite = SuiteEntity.objects.get(pk=pk)
+            suite = Suite.objects.get(pk=pk)
 
             today = datetime.today().strftime("%H:%M %d/%m/%y")
 
             interval_date_template = "{0} - {1}"
             interval_date_format = "%a %b %d %Y"
+
+            addons = Addon.objects.all()
 
             context = {
                 'today': today,
@@ -131,7 +133,8 @@ def check(request):
                     check_out_date.strftime(interval_date_format),
                 ),
                 'interval_days': interval_delta.days,
-                'price_per_one': interval_delta.days * suite.price_per_night
+                'price_per_one': interval_delta.days * suite.price_per_night,
+                'addons': addons
             }
 
             return render(request, 'check.html', context)

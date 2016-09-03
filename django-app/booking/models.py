@@ -25,7 +25,7 @@ class Suite(models.Model):
 
     name = models.CharField(max_length=128)
     price_per_night = models.IntegerField(default=10)
-    rent_periods = models.ManyToManyField(RentPeriod, blank=True)
+    rent_periods = models.ManyToManyField(RentPeriod, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -98,11 +98,11 @@ class Client(models.Model):
     )
     sex = models.BooleanField(choices=SEX_CHOICES, default=True)
 
-    phone = models.CharField(max_length=64, blank=True)
-    address = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=32, blank=True)
-    country = models.CharField(max_length=32, blank=True)
-    note = models.TextField(blank=True)
+    phone = models.CharField(max_length=64, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=32, blank=True, null=True)
+    country = models.CharField(max_length=32, blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return "{0} - {1}".format(self.username, self.email)
@@ -118,7 +118,7 @@ class Booking(models.Model):
     suites = models.ManyToManyField(Suite)
     adults = models.PositiveIntegerField(validators=[MinValueValidator(1)], default=1)
 
-    addons = models.ForeignKey(AddonsStack, blank=True, null=True)
+    addons = models.ForeignKey(AddonsStack, blank=True, null=True, on_delete=models.SET(None))
 
     amount = models.PositiveIntegerField(validators=[MinValueValidator(10)])
 

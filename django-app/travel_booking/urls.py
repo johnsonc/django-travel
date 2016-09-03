@@ -25,7 +25,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^$', views.index, name='index'),
-    url(r'^booking$', views.booking, name='booking'),  # TODO: remove it
     url(r'^check$', views.check, name='check'),
     url(r'^invoice$', views.invoice, name='invoice'),
     url(r'^invoice/create$', views.result, name='result')

@@ -38,10 +38,19 @@
             <div class="panel panel-default suite-panel">
               <div class="panel-heading">
                 <h3 class="panel-title">{{ suite }}
+
+                {% if busy %}
+                    <span class="btn-xs busy-marker">
+                        <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                        Sorry, booked!
+                    </span>
+                {% else %}
                     <span class="btn-xs available-marker">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         Available
                     </span>
+                {% endif %}
+
                 </h3>
               </div>
 
@@ -95,7 +104,11 @@
     <div class="row">
         <div class="col-md-5 col-md-offset-3 continue-block">
             <p>
-              <button type="button" class="btn btn-primary btn-lg pull-right">Continue</button>
+              <button
+                  {% if busy %}
+                      disabled="disabled"
+                  {% endif %}
+                      type="button" class="btn btn-primary btn-lg pull-right">Continue</button>
             </p>
         </div>
     </div>

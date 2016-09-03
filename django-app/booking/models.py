@@ -88,9 +88,30 @@ class AddonsStack(models.Model):
         return "{0}: {1}".format(count, data)
 
 
+class Client(models.Model):
+    username = models.CharField(max_length=64)
+    email = models.CharField(max_length=64)
+
+    SEX_CHOICES = (
+        (True, 'Male'),
+        (False, 'Female')
+    )
+    sex = models.BooleanField(choices=SEX_CHOICES, default=True)
+
+    phone = models.CharField(max_length=64, blank=True)
+    address = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=32, blank=True)
+    country = models.CharField(max_length=32, blank=True)
+    note = models.TextField(blank=True)
+
+    def __str__(self):
+        return "{0} - {1}".format(self.username, self.email)
+
+
 class Booking(models.Model):
 
     created_date = models.DateTimeField(auto_now=True)
+    client = models.ForeignKey(Client, on_delete=models.PROTECT)
 
     period = models.OneToOneField(RentPeriod, on_delete=models.CASCADE)
 
@@ -99,7 +120,9 @@ class Booking(models.Model):
 
     addons = models.ForeignKey(AddonsStack, blank=True, null=True)
 
+    amount = models.PositiveIntegerField(validators=[MinValueValidator(10)])
+
     def __str__(self):
         suites_stack = self.suites.all()
         data = ", ".join((str(suite) for suite in suites_stack))
-        return "{0} created at {1}".format(data, self.created_date.strftime("%A %d/%m/%y"))
+        return "{0} created at {1}".format(data, self.created_date.strftime("%H:%M %A %d/%m/%y"))

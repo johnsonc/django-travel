@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import loader
 
 from .forms import BookingForm
-from .models import Suite, RentPeriod, DateInterval, Addon, Booking
+from .models import Client, Suite, RentPeriod, DateInterval, Addon, Booking
 from time_utility import get_overlap_for_range, get_succesful_dates_delta
 
 logger = logging.getLogger(__name__)
@@ -253,6 +253,11 @@ def result(request):
         username = escape(request.POST['username'])
         email = escape(request.POST['email'])
 
+        # TODO: remove it!
+        username = username or "User"
+        email = email or "user@webserver.com"
+        # TODO: warning
+
         suite_pk = int(request.session['suite'])
         adults = int(request.session['adults'])
 
@@ -266,14 +271,23 @@ def result(request):
         price = rent_interval.days * suite.price_per_night * adults
 
         # Saving a new models
-        new_date_interval = DateInterval()
-        new_rent_period = RentPeriod(interval=new_date_interval)
-        new_booking = Booking(period=new_rent_period)
+        new_date_interval = DateInterval.objects.create(start_date=check_in_date, finish_date=check_out_date)
+        new_rent_period = RentPeriod.objects.create(interval=new_date_interval)
 
-        # TODO: remove it!
-        username = username or "User"
-        email = email or "user@webserver.com"
-        # TODO: warning
+        client, created = Client.objects.get_or_create(username=username, email=email)
+
+        try:
+            new_booking, created = Booking.objects.update_or_create(
+                client=client,
+                period=new_rent_period,
+                adults=adults,
+                amount=price)
+
+            new_booking.suites.add(suite)
+
+        except Exception as e:
+            logger.warning("Exception = {0}".format(e.message))
+
 
         context = {
             'name': username,
@@ -293,7 +307,6 @@ def result(request):
         }
 
         logger.debug(context['exception'])
-        request.session.flush()
 
         body = TEMPLATE_404.render(context, request)
         return HttpResponseBadRequest(body)

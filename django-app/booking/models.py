@@ -25,7 +25,7 @@ class Suite(models.Model):
 
     name = models.CharField(max_length=128)
     price_per_night = models.IntegerField(default=10)
-    rent_periods = models.ManyToManyField(RentPeriod, blank=True, null=True)
+    rent_periods = models.ManyToManyField(RentPeriod, blank=True)
 
     def __str__(self):
         return self.name

@@ -34,7 +34,7 @@
         </div>
 
         <div class="col-md-8">
-            {% if available_suites %}
+            {% if has_suites %}
                 <table class="table table-striped suite-table">
                     <thead>
                         <tr>
@@ -54,7 +54,7 @@
 
                         <td>
                             <h4 class="suite-name">{{ suite.name }}</h4>
-                            {% if suite.rent_periods.all %}
+                            {% if suite.rent_periods.exists %}
                                 {% for period in suite.rent_periods.all %}
                                     <h5>Rented: (day/m/y)</h5>
                                     <h6>{{ period }}</h6>

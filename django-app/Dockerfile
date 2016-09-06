@@ -1,7 +1,7 @@
 FROM alpine:3.4
 MAINTAINER Menangen <menangen@gmail.com>
 
-RUN apk --update --no-cache add python py-pip
+RUN apk --update --no-cache add python-dev py-pip gcc musl-dev postgresql-dev
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -24,4 +24,5 @@ COPY travel_booking/*.py /usr/src/app/travel_booking/
 COPY manage.py /usr/src/app
 
 EXPOSE 8000
-CMD ["python", "./manage.py", "runserver", "0.0.0.0:8000", "--noreload"]
+# CMD ["python", "./manage.py", "runserver", "0.0.0.0:8000", "--noreload"]
+CMD ["gunicorn", "-w 3", "-b 0.0.0.0:8000", "travel_booking.wsgi"]

@@ -10,7 +10,7 @@ from django.template import loader
 
 from django.views.decorators.cache import cache_page
 
-from .models import Client, Suite, RentPeriod, DateInterval, Addon, Booking
+from .models import Client, Suite, RentPeriod, Addon, Booking
 from time_utility import DateHelper
 
 logger = logging.getLogger(__name__)
@@ -23,12 +23,12 @@ CACHE_TIME = 1  # Minutes
 def index(request):
     date_help = DateHelper()
 
-    rent_periods = RentPeriod.objects.select_related('interval').all()
+    rent_periods = RentPeriod.objects.all()
     busy_date_range_pks = set()
 
     for period in rent_periods:
-        suite_start_date = period.interval.start_date
-        suite_end_date = period.interval.finish_date
+        suite_start_date = period.start_date
+        suite_end_date = period.finish_date
 
         overlap = date_help.get_overlap_with_today(suite_start_date, suite_end_date, days=4)
         if overlap:
@@ -40,7 +40,7 @@ def index(request):
 
     free_suites = Suite.objects.exclude(
         rent_periods__pk__in=busy_date_range_pks
-    ).order_by('-price_per_night').reverse().prefetch_related('rent_periods__interval')
+    ).order_by('-price_per_night').reverse().prefetch_related('rent_periods')
 
     today_str = datetime.today().strftime("%H:%M %d/%m/%y")
     context = {'has_suites': False, 'available_suites': free_suites, 'today': today_str}
@@ -58,19 +58,19 @@ def check(request):
 
     try:
         pk = int(request.POST['pk'])
-        check_in_date = request.POST['check_in_date']
-        check_out_date = request.POST['check_out_date']
+        check_in_date_string = request.POST['check_in_date']
+        check_out_date_string = request.POST['check_out_date']
 
-        logger.debug("check_in_date is {0}".format(check_in_date))
-        logger.debug("check_out_date is {0}".format(check_out_date))
+        logger.debug("check_in_date is {0}".format(check_in_date_string))
+        logger.debug("check_out_date is {0}".format(check_out_date_string))
 
-        if pk and check_in_date and check_out_date:
+        if pk and check_in_date_string and check_out_date_string:
             date_help = DateHelper()
 
             try:
                 check_in_date_object, check_out_date_object = date_help.get_date_from_format(
-                    check_in_date,
-                    check_out_date
+                    check_in_date_string,
+                    check_out_date_string
                 )
 
                 logger.debug("check_in_date_object is {0}".format(check_in_date_object))
@@ -99,17 +99,17 @@ def check(request):
                 request.session['check_out_date'] = dates_formated['ymd']['check_out']
                 request.session['suite'] = pk
 
-                suite = Suite.objects.prefetch_related('rent_periods__interval').get(pk=pk)
+                suite = Suite.objects.prefetch_related('rent_periods').get(pk=pk)
 
-                rent_periods = suite.rent_periods.select_related('interval').all()
+                rent_periods = suite.rent_periods.all()
 
                 logger.debug("{0} rent_periods for Suite instance".format(len(rent_periods)))
 
                 suite_rented_for_check_interval = False
 
                 for period in rent_periods:
-                    suite_start_date = period.interval.start_date
-                    suite_end_date = period.interval.finish_date
+                    suite_start_date = period.start_date
+                    suite_end_date = period.finish_date
 
                     overlap = date_help.get_overlap_for_range(
                         suite_start_date,
@@ -293,20 +293,19 @@ def result(request):
         price = rent_interval.days * suite.price_per_night * adults
 
         # Saving a new models
-        new_date_interval = DateInterval.objects.create(start_date=check_in_date, finish_date=check_out_date)
-        new_rent_period = RentPeriod.objects.create(interval=new_date_interval)
+        rent_period = RentPeriod.objects.create(start_date=check_in_date, finish_date=check_out_date)
 
         client, created = Client.objects.get_or_create(username=username, email=email)
 
         try:
             new_booking, created = Booking.objects.update_or_create(
                 client=client,
-                period=new_rent_period,
+                period=rent_period,
                 adults=adults,
-                amount=price)
+                total_price=price)
 
             new_booking.suites.add(suite)
-            suite.rent_periods.add(new_rent_period)
+            suite.rent_periods.add(rent_period)
 
         except Exception as e:
             logger.warning("Exception = {0}".format(e.message))

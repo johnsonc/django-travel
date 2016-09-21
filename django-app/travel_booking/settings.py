@@ -24,6 +24,7 @@ SECRET_KEY = '^%d+u2s+u-s!!$ssas5!@&11vnaf%&v#&q!1jyvty5y6o(y5tk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 ALLOWED_HOSTS = []
 
@@ -37,10 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'booking'
+    'booking',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -49,6 +53,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-travel',
+    }
+}
 
 ROOT_URLCONF = 'travel_booking.urls'
 
@@ -75,7 +86,7 @@ WSGI_APPLICATION = 'travel_booking.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'postgresql': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'travel',
             'USER': 'traveler',
@@ -83,7 +94,7 @@ DATABASES = {
             'HOST': '127.0.0.1',
             'PORT': '5432'
         },
-    'sqlite': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
@@ -127,7 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-DJANGO_LOG_LEVEL=DEBUG
+DJANGO_LOG_LEVEL = DEBUG
 
 LOGGING = {
     'version': 1,
@@ -150,3 +161,15 @@ STATICFILES_DIRS = [
 ]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+INTERNAL_IPS = ['192.168.1.10', '192.168.1.5', '127.0.0.1']
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+]

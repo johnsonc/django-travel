@@ -8,18 +8,22 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import loader
 
+from django.views.decorators.cache import cache_page
+
 from .models import Client, Suite, RentPeriod, DateInterval, Addon, Booking
 from time_utility import DateHelper
 
 logger = logging.getLogger(__name__)
 TEMPLATE_404 = loader.get_template('error_400.html')
+CACHE_TIME = 1  # Minutes
 
 
 # Index view.
+@cache_page(60 * CACHE_TIME)
 def index(request):
     date_help = DateHelper()
 
-    rent_periods = RentPeriod.objects.all()
+    rent_periods = RentPeriod.objects.select_related('interval').all()
     busy_date_range_pks = set()
 
     for period in rent_periods:
@@ -36,10 +40,13 @@ def index(request):
 
     free_suites = Suite.objects.exclude(
         rent_periods__pk__in=busy_date_range_pks
-    ).order_by('-price_per_night').reverse()
+    ).order_by('-price_per_night').reverse().prefetch_related('rent_periods__interval')
 
     today_str = datetime.today().strftime("%H:%M %d/%m/%y")
-    context = {'available_suites': free_suites, 'today': today_str}
+    context = {'has_suites': False, 'available_suites': free_suites, 'today': today_str}
+
+    if free_suites.exists():
+        context['has_suites'] = True
 
     return render(request, 'index.html', context)
 
@@ -92,9 +99,9 @@ def check(request):
                 request.session['check_out_date'] = dates_formated['ymd']['check_out']
                 request.session['suite'] = pk
 
-                suite = Suite.objects.get(pk=pk)
+                suite = Suite.objects.prefetch_related('rent_periods__interval').get(pk=pk)
 
-                rent_periods = suite.rent_periods.all()
+                rent_periods = suite.rent_periods.select_related('interval').all()
 
                 logger.debug("{0} rent_periods for Suite instance".format(len(rent_periods)))
 

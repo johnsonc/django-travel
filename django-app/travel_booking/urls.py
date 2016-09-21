@@ -13,15 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
-from django.views.i18n import JavaScriptCatalog
+from django.conf import settings
 
 from booking import views
 
 urlpatterns = [
-    # TODO: remove it
-    url(r'^admin/jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url(r'^admin/', admin.site.urls),
 
     url(r'^$', views.index, name='index'),
@@ -29,3 +27,10 @@ urlpatterns = [
     url(r'^invoice$', views.invoice, name='invoice'),
     url(r'^invoice/create$', views.result, name='result')
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

@@ -1,7 +1,10 @@
 FROM alpine:3.4
 MAINTAINER Menangen <menangen@gmail.com>
 
-RUN apk --update --no-cache add python-dev py-pip gcc musl-dev postgresql-dev
+# POSTGRESQL:
+# RUN apk --update --no-cache add python-dev py-pip gcc musl-dev postgresql-dev
+# SQLLITE ONLY:
+RUN apk --update --no-cache add py-pip
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -17,7 +20,7 @@ COPY booking/migrations/*.py /usr/src/app/booking/migrations/
 COPY booking/*.py /usr/src/app/booking/
 
 COPY booking/templates/*.html /usr/src/app/booking/templates/
-COPY booking/static/dist/ /usr/src/app/booking/static/dist/
+COPY booking/static/ /usr/src/app/booking/static/
 
 COPY travel_booking/*.py /usr/src/app/travel_booking/
 

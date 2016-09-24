@@ -79,13 +79,13 @@ class Addon(models.Model):
     MORNING = r'M'
     EVENING = r'E'
     WHOLE = r'W'
-    TIME = r'T'
+    TIMESLOT = r'T'
 
     TIME_CHOICES = (
         (MORNING, 'Morning'),
         (EVENING, 'Evening'),
         (WHOLE, 'Whole day'),
-        (TIME, 'Time slot'),
+        (TIMESLOT, 'Time slot'),
     )
     unit = models.CharField(
         choices=TIME_CHOICES,
@@ -97,7 +97,7 @@ class Addon(models.Model):
         return self.name
 
 
-class AddonsEntity(models.Model):
+class AddonsPurchasing(models.Model):
     addon = models.ForeignKey(Addon)
     purchased_in_dates = models.ManyToManyField(PurchaseInDay)
 
@@ -109,7 +109,7 @@ class AddonsEntity(models.Model):
 
 
 class Enhance(models.Model):
-    addons = models.ManyToManyField(AddonsEntity)
+    addons = models.ManyToManyField(AddonsPurchasing)
 
     def __str__(self):
         addons_stack = self.addons.all()
